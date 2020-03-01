@@ -1,0 +1,80 @@
+accessible: true
+author: Charles Gombeer
+categories: []
+contact_url: ''
+context: |+
+    Vous travailler pour une agence de renseignement. On vous a demandé de développer un programme capable de générer des clés RSA, de chiffrer des messages et de les déchiffrer.
+
+    https://www.tutorialspoint.com/cryptography_with_python/cryptography_with_python_understanding_rsa_algorithm.htm
+
+environment_id: pyjavacpp
+environment_parameters:
+    limits:
+        memory: '100'
+        hard_time: ''
+        time: '60'
+    run_cmd: ''
+environment_type: docker
+evaluate: best
+file: ''
+groups: false
+input_random: '0'
+name: Algorithme RSA
+network_grading: false
+problems:
+    Generation_cles:
+        default: |-
+            def keys_generation(length):
+
+                """Génére deux clés, privée et publique,
+                Args:
+                    length (int) : longueur de la clé privée
+                Returns:
+                    list : la clé privée (le couple d,e), la clé publique (le couple n,e)
+                """
+        name: Génération des clés
+        header: |-
+            Soit la fonction keys_generation, votre première tâche est donc d'implementer cette dernière, de sorte qu'elle retourne une clé privée de longueur "length" et une clé publique.
+
+            Vous pouvez utilisez la fonction IsPrime(x) qui vérifie si un nombre x est premier, ainsi que les fonction random et math
+        type: code
+        language: python
+    message_encrypt:
+        type: code
+        header: |+
+            Soit la fonction keys_generation, votre deuxième tâche est donc d'implementer cette dernière, de sorte qu'elle retourne un message chiffré avec une clé publique.
+
+            Associer le numéro de l'ordre de la lettre dans l'alphabet pour transformer le message en une séquence numérique.
+
+        language: python
+        default: |-
+            def encryption(message, public_key):
+
+                """Chiffre un message donné avec une clé publique,
+                Args:
+                    message (str) : message à chiffrer
+                    public_key (list) : la clé publique
+                Returns:
+                    list : les blocs chiffrés du message
+                """
+        name: Chiffrement des messages
+    message_decrypt_01:
+        type: code
+        header: |
+            Enfin, écrivez la fonction decrypt qui déchiffre un message avec la clé privée associée.
+        name: Déchiffrement des messages
+        language: python
+        default: |-
+            def decrypt(message, private_key):
+                """Déchiffre un message donné avec une clé privé,
+                Args:
+                    message (list) : message à déchiffrer
+                    private_key (list) : la clé privée
+                Returns:
+                    str : le message déchiffré
+                """
+stored_submissions: 0
+submission_limit:
+    amount: -1
+    period: -1
+weight: 1.0
