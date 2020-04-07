@@ -1,27 +1,45 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-
 import unittest
 import sys
 
-import encryption
-import keys_generation
+import correct_function as correct
 import decrypt as student
 
 
-class Test_decrypt(unittest.TestCase):
+p, q = correct.Prime_generation()
 
-    def test_all(self):
-        args = ["bonjour", "abc", "test"]
-        rep = _("Votre fonction renvoie {} au lieu de {}")
+class Test_decryption(unittest.TestCase):
+
+    def test(self):
+        # Génère  les clés publiques et privées utilisé pour la correction
+        correct_keys = correct.keys_generation(p, q)
+        correct_private_key = correct_keys[0]
+        correct_public_key = correct_keys[1]
+
+        # Génére un chiffrement
+        correct_encryption = correct.encryption("test", correct_public_key)
+        correct_decryption = correct.decrypt(correct_encryption, correct_private_key)
+
         try:
-            for n in args:
-                private_key, public_key = keys_generation.keys_generation(5)
-                encrypted_message = encryption.encryption(n, public_key)
-                student_ans = student.decrypt(encrypted_message, private_key)
-                self.assertEqual(student_ans, n,rep.format(student_ans,n))
+            # Génére les déchiffrements de l'étudiant et de la correction pour les comparer
+            student_rep = student.decrypt(correct_encryption, correct_private_key)
+            correct_rep = correct.decrypt(correct_encryption, correct_private_key)
+
+            # Comparer les deux déchiffrements
+            self.assertEqual(student_rep, correct_rep, "La fonction de déchiffrement ne fonctionne pas correctement")
+
         except Exception as e:
-            self.fail("Votre fonction a provoqué l'exception {}: {} avec comme argument {}".format(type(e), e, n))
-    
+                self.fail("Il y a des erreurs :  " + str(e))
+                
+    # Vérifie si la fonction gére les entrées incorrectes              
+    def test_incorrect_input(self):
+        try:
+            student_rep = student.decrypt(-10, "test")
+            self.assertIsNone(student_rep, "Votre fonction ne gére pas les entrées incorrectes")
+
+        except Exception as e:
+                 self.fail("Votre fonction ne gére pas les entrées incorrectes")            
+
+
+
 if __name__ == '__main__':
     unittest.main()

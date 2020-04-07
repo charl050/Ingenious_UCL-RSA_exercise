@@ -95,6 +95,7 @@ def compile_code():
 def cleanup_output(error_content):
     """
         Provides a cleaner output from the error trace
+
         :param error_content: string returned by the unittest failures
     """
     cleaned_lines = []
@@ -109,6 +110,7 @@ def run_code(n_exercises, lang):
     """
         Runs the student code with the tests
         Provides feedback if it contains errors
+
         :param n_exercises: the task's number of exercices
         :param lang: the language used by the user
     """

@@ -5,7 +5,13 @@ contact_url: ''
 context: |+
     Vous travailler pour une agence de renseignement. On vous a demandé de développer un programme capable de générer des clés RSA, de chiffrer des messages et de les déchiffrer.
 
-    https://www.tutorialspoint.com/cryptography_with_python/cryptography_with_python_understanding_rsa_algorithm.htm
+    Le RSA a été inventé par Rivest, Shamir et Adleman en 1978. C’est l’exemple le plus courant de cryptographie asymétrique, toujours considéré comme sûr, avec la technologie actuelle, pour des clés suffisament grosses.
+
+
+
+    Pour plus d'infos : https://interstices.info/nombres-premiers-et-cryptologie-lalgorithme-rsa/
+
+    (Étant donné que nous devons générer et calculer des nombres aléatoirement lors de la correction, cette dernière peut parfois prendre quelque dizaine de secondes.)
 
 environment_id: pyjavacpp
 environment_parameters:
@@ -24,28 +30,49 @@ network_grading: false
 problems:
     Generation_cles:
         default: |-
-            def keys_generation(length):
+            def keys_generation(p, q):
 
-                """Génére deux clés, privée et publique,
+                """Génére deux clés, privée et publique, avec un couple de nombres premiers p, q donné
                 Args:
-                    length (int) : longueur de la clé privée
+                    p (int) : nombre premier
+                    q (int) : nombre premier
                 Returns:
-                    list : la clé privée (le couple d,e), la clé publique (le couple n,e)
-                """
+                    list : la clé privée (le couple d,e,n), la clé publique (le couple n,e)"""
         name: Génération des clés
-        header: |-
-            Soit la fonction keys_generation, votre première tâche est donc d'implementer cette dernière, de sorte qu'elle retourne une clé privée de longueur "length" et une clé publique.
+        header: |+
+            Soit la fonction keys_generation, votre première tâche est donc d'implementer cette dernière, de sorte qu'elle retourne une clé privée et une clé publique, générées avec des nombres premiers p et q donnés.
 
-            Vous pouvez utilisez la fonction IsPrime(x) qui vérifie si un nombre x est premier, ainsi que les fonction random et math
+            Pour générer des clés publiques et privées, on utilise :
+             - deux nombres premiers, p et q,
+             - le produit n issu de p et q,
+             - un nombre e, premier avec le produit de (p-1) et (q-1), inférieur au produit (p-1) et (q-1),
+             - un nombre d, tel que que (d*e) mod (p-1)*(q-1) = 1
+
+            Par exemple, nous avons p = 3 et q = 5 :
+             - n = 15
+             - e = 3 car (p-1)*(q-1) = 8 et 3 est premier avec 8
+             - d = 3 car d*e = 3×3 = 9 = 8×1 + 1
+
+
+
         type: code
         language: python
     message_encrypt:
         type: code
-        header: |+
+        header: |
             Soit la fonction keys_generation, votre deuxième tâche est donc d'implementer cette dernière, de sorte qu'elle retourne un message chiffré avec une clé publique.
 
-            Associer le numéro de l'ordre de la lettre dans l'alphabet pour transformer le message en une séquence numérique.
 
+
+            Pour chiffrer un message avec une clé publique donné, nous devons:
+             - transformer le mesage en une séquence numérique. Pour ce faire, associer le numéro de l'ordre de la lettre dans l'alphabet pour transformer le message en une séquence numérique,
+             - calculer le nombre x tel que x = nombre_asscocié_à_la_lettre^e mod n,
+             - répeter l'étape pour toute les lettres du messages.
+
+            Par exemple, pour la clé publique (15, 3) :
+             - "bcd" devient 2,3,4
+             - x pour la lettre b vaut (2^3) mod 15 = 8
+             - le message chiffré est 8, 12, 64
         language: python
         default: |-
             def encryption(message, public_key):
@@ -60,8 +87,19 @@ problems:
         name: Chiffrement des messages
     message_decrypt_01:
         type: code
-        header: |
+        header: |+
             Enfin, écrivez la fonction decrypt qui déchiffre un message avec la clé privée associée.
+
+            Pour déchiffrer un message avec une clé privé donné, nous devons :
+             - calculer le nombre y tel que y = bloc_chiffré^d mod n
+             - transformer le nombre y en une lettre (l'ordre dans l'alphabet)
+
+            Par exemple, pour la clé privée (3, 3, 15) avec le message chiffré (8, 12, 64):
+             - y pour le nombre 8 vaut (8^3) mod 15 = 2
+             - le message déchiffré donne donc 2,3,4
+             - on transformer ces chiffres en lettres : "abc"
+
+
         name: Déchiffrement des messages
         language: python
         default: |-
